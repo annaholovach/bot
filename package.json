@@ -13,7 +13,9 @@
     "nodemon": "^2.0.22"
   },
   "dependencies": {
+    "@ngrok/ngrok": "^0.5.2",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "node-telegram-bot-api": "^0.61.0"
   }

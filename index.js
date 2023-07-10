@@ -1,4 +1,5 @@
 const TelegramBot = require('node-telegram-bot-api');
+const ngrok = require("@ngrok/ngrok");
 const express = require('express')
 const cors = require('cors')
 
@@ -52,20 +53,22 @@ bot.on('message', async (msg) => {
 });
 
 app.post('/web-data', async (req, res) => {
-    const {queryId, products, totalPrice} = req.body
+    const {queryId, products = [], totalPrice} = req.body
     try{
         await bot.answerWebAppQuery(queryId, {
             type: 'article',
             id: queryId,
-            tittle: 'Успешная покупка',
-            input_message_content: {message_text: 'Поздравляю вы приобрели товар на сумму: ' + totalPrice}
+            title: 'Успешная покупка',
+            input_message_content: {message_text: `
+                Поздравляю вы приобрели товар на сумму: ${totalPrice},
+                ${products.map(item => item.title).join(', ')}`}
         })
         return res.status(200).json({})
     }catch(e){
         await bot.answerWebAppQuery(queryId, {
             type: 'article',
             id: queryId,
-            tittle: 'Не удалось приобрести товар',
+            title: 'Не удалось приобрести товар',
             input_message_content: {message_text: 'Не удалось приобрести товар'}
         })
     }
@@ -73,4 +76,9 @@ app.post('/web-data', async (req, res) => {
 })
 
 const PORT = 8000
+
 app.listen(PORT, () => console.log('server started on port: ' + PORT))
+
+// ngrok.listen(app).then(() => {
+// 	console.log("url:", app.tunnel.url());
+// });
